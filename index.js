@@ -4,7 +4,10 @@ const bodyParser = require('body-parser');
 const PORT = 8080;
 
 const categoriesController = require('./categories/CategoriesController');
+const Category = require('./categories/Category');
+
 const articlesController = require('./articles/ArticlesController');
+const Article = require('./articles/Article');
 
 const connection = require('./database/database');
 connection
