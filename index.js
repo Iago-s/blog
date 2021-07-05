@@ -23,6 +23,10 @@ app.use(bodyParser.json());
 app.use('/', categoriesController);
 app.use('/', articlesController);
 
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
 app.listen(PORT, () => {
   console.log(`Serve started in http://localhost:${PORT}`);
 });
