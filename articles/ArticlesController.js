@@ -19,6 +19,22 @@ router.get('/admin/articles/new', (req, res) => {
   });
 });
 
+router.get('/admin/articles/edit/:id', (req, res) => {
+  const { id } = req.params;
+
+  Article.findByPk(id)
+    .then((article) => {
+      if (article != undefined) {
+        Category.findAll().then((categories) => {
+          res.render('admin/articles/edit', { article, categories });
+        });
+      } else {
+        res.redirect('/');
+      }
+    })
+    .catch((err) => res.redirect('/'));
+});
+
 router.post('/articles/save', (req, res) => {
   const { title, body, categorieId } = req.body;
 
@@ -28,6 +44,24 @@ router.post('/articles/save', (req, res) => {
     slug: slugify(title),
     body,
   }).then(() => res.redirect('/admin/articles'));
+});
+
+router.post('/articles/update', (req, res) => {
+  const { id, title, body, categorieId } = req.body;
+
+  Article.update(
+    {
+      title,
+      body,
+      slug: slugify(title),
+      categorieId,
+    },
+    {
+      where: { id },
+    }
+  )
+    .then(() => res.redirect('/admin/articles'))
+    .catch((err) => res.redirect('/'));
 });
 
 router.post('/articles/delete', (req, res) => {

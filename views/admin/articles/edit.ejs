@@ -1,0 +1,60 @@
+<%- include('../../partials/head.ejs') %>
+  <body>
+    <%- include('../../partials/navbar.ejs') %>
+    
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <h2>Edição de artigo</h2>
+        </div>
+        <div class="card-body">
+          <form action="/articles/update" method="POST" >
+            <input 
+              class="form-control mb-2" 
+              type="text" 
+              name="title" 
+              placeholder="Titulo do artigo"
+              value="<%= article.title%>"
+            >
+            <label>Categoria</label>
+            <select class="form-control mb-2" name="categorieId">
+              <% categories.forEach(function(category) {%>
+                <% if(category.id == article.categorieId) { %>
+                  <option value="<%= category.id %>" selected><%= category.title%></option>
+                <% } else { %>
+                  <option value="<%= category.id %>"><%= category.title%></option>
+                <% } %>
+              <% }) %>
+            </select>
+            <textarea 
+              class="form-control mb-2" 
+              id="article"
+              placeholder="Escreva o artigo" 
+              name="body"
+            ></textarea>
+            <input type="hidden" name="id" value="<%= article.id %>">
+            <button class="btn btn-success mt-2">Atualizar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="content" style="display: none;"><%= article.body %></div>
+    
+    <%- include('../../partials/scripts.ejs') %>
+    <script src="/tinymce/tinymce.min.js"></script>
+    <script>
+      tinymce.init({
+        language: 'pt_BR',
+        selector: '#article',
+        plugins: [
+          'advlist autolink link image lists print preview hr searchreplace wordcount fullscreen insertdatetime media save table paste emoticons'
+        ],
+        init_instance_callback: () => {
+          var $content = document.getElementById('content').textContent;
+          tinymce.get('article').setContent($content);
+        }
+      })
+    </script>
+  </body>
+</html>
