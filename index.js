@@ -10,6 +10,7 @@ const articlesController = require('./articles/ArticlesController');
 const Article = require('./articles/Article');
 
 const connection = require('./database/database');
+const router = require('./categories/CategoriesController');
 connection
   .authenticate()
   .then(() => console.log('Database connection success!'))
@@ -26,6 +27,7 @@ app.use('/', articlesController);
 app.get('/', (req, res) => {
   Article.findAll({
     order: [['id', 'DESC']],
+    limit: 8,
   }).then((articles) => {
     Category.findAll().then((categories) =>
       res.render('index', { articles, categories })
