@@ -1,7 +1,10 @@
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
+const session = require('express-session');
+
 const PORT = 8080;
+
+const app = express();
 
 const usersController = require('./users/UsersController');
 const Users = require('./users/Users');
@@ -18,6 +21,15 @@ connection
   .then(() => console.log('Database connection success!'))
   .catch((err) => console.log('Failed to connect to database!'));
 
+app.use(
+  session({
+    secret: 'qualquercoisa',
+    cookie: {
+      maxAge: 30000,
+    },
+  })
+);
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,6 +38,22 @@ app.use(bodyParser.json());
 app.use('/', usersController);
 app.use('/', categoriesController);
 app.use('/', articlesController);
+
+app.get('/session', (req, res) => {
+  req.session.course = 'Formação nodejs';
+  req.session.user = {
+    name: 'Iago Silva',
+    email: 'iago@email.com',
+  };
+
+  res.send('Section generated');
+});
+
+app.get('/read', (req, res) => {
+  const { course, user } = req.session;
+
+  res.json({ course, user });
+});
 
 app.get('/', (req, res) => {
   Article.findAll({
