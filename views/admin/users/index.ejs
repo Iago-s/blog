@@ -1,0 +1,52 @@
+<%- include('../../partials/head.ejs') %>
+  <body>
+    <%- include('../../partials/navbar.ejs') %>
+
+    <div class="container">
+      <h2>Usuários</h2>
+      <a class="btn btn-success mb-3" href="/admin/users/create">Cadastrar novo usuário</a>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(function(user) { %>
+            <tr>
+              <td><%= user.id %></td>
+              <td><%= user.email %></td>
+              <td>
+                <a class="btn btn-warning" href="/admin/users/edit/<%= user.id %>">Editar</a>
+                <form 
+                  action="/users/delete" 
+                  method="POST" 
+                  style="display: inline;" 
+                  onSubmit="handleDelete(event, this)"
+                >
+                  <input type="hidden" name="id" value="<%= user.id %>">
+                  <button class="btn btn-danger">Apagar</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function handleDelete(event, form) {
+        event.preventDefault();
+
+        const decision = confirm('Você quer apagar essa categoria?');
+
+        if(decision) {
+          form.submit();
+        } 
+      }
+    </script>
+    <%- include('../../partials/scripts.ejs') %>
+  </body>
+</html>

@@ -3,6 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const PORT = 8080;
 
+const usersController = require('./users/UsersController');
+const Users = require('./users/Users');
+
 const categoriesController = require('./categories/CategoriesController');
 const Category = require('./categories/Category');
 
@@ -10,7 +13,6 @@ const articlesController = require('./articles/ArticlesController');
 const Article = require('./articles/Article');
 
 const connection = require('./database/database');
-const router = require('./categories/CategoriesController');
 connection
   .authenticate()
   .then(() => console.log('Database connection success!'))
@@ -21,6 +23,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use('/', usersController);
 app.use('/', categoriesController);
 app.use('/', articlesController);
 
