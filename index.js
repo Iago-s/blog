@@ -25,7 +25,7 @@ app.use(
   session({
     secret: 'qualquercoisa',
     cookie: {
-      maxAge: 30000,
+      maxAge: 30000000,
     },
   })
 );
@@ -38,22 +38,6 @@ app.use(bodyParser.json());
 app.use('/', usersController);
 app.use('/', categoriesController);
 app.use('/', articlesController);
-
-app.get('/session', (req, res) => {
-  req.session.course = 'Formação nodejs';
-  req.session.user = {
-    name: 'Iago Silva',
-    email: 'iago@email.com',
-  };
-
-  res.send('Section generated');
-});
-
-app.get('/read', (req, res) => {
-  const { course, user } = req.session;
-
-  res.json({ course, user });
-});
 
 app.get('/', (req, res) => {
   Article.findAll({

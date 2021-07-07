@@ -3,19 +3,21 @@ const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
+const adminAuth = require('../middleware/adminAuth');
+
 const Users = require('./Users');
 
-router.get('/admin/users', (req, res) => {
+router.get('/admin/users', adminAuth, (req, res) => {
   Users.findAll().then((users) => {
     res.render('admin/users/index', { users });
   });
 });
 
-router.get('/admin/users/create', (req, res) => {
+router.get('/admin/users/create', adminAuth, (req, res) => {
   res.render('admin/users/create');
 });
 
-router.get('/admin/users/edit/:id', (req, res) => {
+router.get('/admin/users/edit/:id', adminAuth, (req, res) => {
   const { id } = req.params;
 
   if (isNaN(id)) {
@@ -85,6 +87,43 @@ router.post('/users/delete', (req, res) => {
   } else {
     res.redirect('/admin/users');
   }
+});
+
+router.get('/login', (req, res) => {
+  res.render('admin/users/login');
+});
+
+router.post('/auth', (req, res) => {
+  const { email, password } = req.body;
+
+  Users.findOne({
+    where: {
+      email,
+    },
+  }).then((user) => {
+    if (user != undefined) {
+      const correct = bcrypt.compareSync(password, user.password);
+
+      if (correct) {
+        req.session.user = {
+          id: user.id,
+          email: user.email,
+        };
+
+        res.redirect('/admin/categories');
+      } else {
+        res.redirect('/login');
+      }
+    } else {
+      res.redirect('/login');
+    }
+  });
+});
+
+router.get('/logout', (req, res) => {
+  req.session.user = undefined;
+
+  res.redirect('/');
 });
 
 module.exports = router;
